@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="?android:listPreferredItemHeightLarge"
+    android:layout_margin="16dp">
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:layout_marginRight="16dp"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/ic_launcher_background"/>
+
+    <LinearLayout
+        android:id="@+id/description"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5" >
+
+        <TextView
+            android:id="@+id/title"
+            android:gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            tools:text="Super awesome news" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="Jun 20, 2019"/>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>
