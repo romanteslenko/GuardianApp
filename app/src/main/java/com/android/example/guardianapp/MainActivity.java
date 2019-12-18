@@ -1,12 +1,5 @@
 package com.android.example.guardianapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.AsyncTaskLoader;
-import androidx.loader.content.Loader;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,15 +8,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Article>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Article>>, SwipeRefreshLayout.OnRefreshListener {
     public static final String TAG = "GuardianApp";
 
     private ArticlesAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
         });
-
+        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setRefreshing(true);
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (data != null) {
             mAdapter.addAll(data);
         }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -70,10 +73,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdapter.clear();
     }
 
+    @Override
+    public void onRefresh() {
+        getSupportLoaderManager().restartLoader(0, null, this);
+    }
+
     private static class ArticlesLoader extends AsyncTaskLoader<List<Article>> {
         private String mUrl;
 
-        public ArticlesLoader(@NonNull Context context, String url) {
+        private ArticlesLoader(@NonNull Context context, String url) {
             super(context);
             mUrl = url;
         }
