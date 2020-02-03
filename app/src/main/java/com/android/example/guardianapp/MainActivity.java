@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -19,7 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Article>>, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Article>> {
     public static final String TAG = "GuardianApp";
 
     private ArticlesAdapter mAdapter;
@@ -46,10 +48,37 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
         });
+
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshArticles();
+            }
+        });
+
+        // TODO: check for internet connection before start loading
         mSwipeRefreshLayout.setRefreshing(true);
-        getSupportLoaderManager().initLoader(0, null, this);
+        refreshArticles();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_refresh) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            refreshArticles();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void refreshArticles() {
+        getSupportLoaderManager().restartLoader(0, null, MainActivity.this);
     }
 
     @NonNull
@@ -71,11 +100,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(@NonNull Loader<List<Article>> loader) {
         mAdapter.clear();
-    }
-
-    @Override
-    public void onRefresh() {
-        getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     private static class ArticlesLoader extends AsyncTaskLoader<List<Article>> {

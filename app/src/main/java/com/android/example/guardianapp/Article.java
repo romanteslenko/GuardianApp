@@ -34,6 +34,7 @@ public class Article {
         return mUrl != null ? mUrl : GUARDIAN_MAIN_PAGE;
     }
 
+    // TODO: generate empty or default thumbnail if null
     @Nullable
     public Bitmap getThumbnail() {
         return mThumbnail;

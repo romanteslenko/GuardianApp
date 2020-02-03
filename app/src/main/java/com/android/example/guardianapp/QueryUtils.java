@@ -3,6 +3,8 @@ package com.android.example.guardianapp;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +23,7 @@ import static com.android.example.guardianapp.MainActivity.TAG;
 
 public class QueryUtils {
 
+    @Nullable
     public static List<Article> fetch(String request) {
         URL url = strToUrl(request);
         String json = null;
@@ -32,6 +35,7 @@ public class QueryUtils {
         return parseJson(json);
     }
 
+    @Nullable
     private static String getResponse(URL url) throws IOException {
         if (url != null) {
             HttpURLConnection httpConnection = null;
@@ -63,6 +67,7 @@ public class QueryUtils {
         return null;
     }
 
+    @Nullable
     private static String readInputStream(InputStream inputStream) throws IOException {
         if (inputStream != null) {
             InputStreamReader reader = new InputStreamReader(inputStream);
@@ -79,6 +84,7 @@ public class QueryUtils {
         }
     }
 
+    @Nullable
     private static List<Article> parseJson(String json) {
         if (TextUtils.isEmpty(json)) {
             return null;
@@ -89,20 +95,18 @@ public class QueryUtils {
             JSONObject root = new JSONObject(json);
             JSONObject response = root.getJSONObject("response");
             JSONArray results = response.getJSONArray("results");
-            if (results == null) {
-                Log.e(TAG, "parseJson: results is null");
-            }
             for (int i = 0; i < results.length(); i++) {
                 JSONObject result = results.getJSONObject(i);
                 String title = result.getString("webTitle");
                 String date = result.getString("webPublicationDate");
                 String url = result.getString("webUrl");
                 JSONObject fields = result.getJSONObject("fields");
+                // TODO: fetch actual bitmap
                 String thumbnailUrl = fields.getString("thumbnail");
                 Article article = new Article(title, date, url, null);
                 articles.add(article);
             }
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             Log.e(TAG, "Cannot parse server response as json");
             e.printStackTrace();
         }

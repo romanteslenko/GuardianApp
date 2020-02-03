@@ -1,0 +1,3 @@
+2e119e26-cf68-4292-8f7e-c7b73f66c25b
+request example:
+https://content.guardianapis.com/search?section=football&page-size=10&show-fields=headline%2Cthumbnail&api-key=2e119e26-cf68-4292-8f7e-c7b73f66c25b
