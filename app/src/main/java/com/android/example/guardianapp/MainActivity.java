@@ -2,6 +2,8 @@ package com.android.example.guardianapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -53,13 +55,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshArticles();
+                if (isNetworkActive()) {
+                    refreshArticles();
+                } else {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
 
-        // TODO: check for internet connection before start loading
-        mSwipeRefreshLayout.setRefreshing(true);
-        refreshArticles();
+        // TODO: show message if no internet connection available
+        if (isNetworkActive()) {
+            mSwipeRefreshLayout.setRefreshing(true);
+            refreshArticles();
+        }
+    }
+
+    private boolean isNetworkActive() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
     @Override
