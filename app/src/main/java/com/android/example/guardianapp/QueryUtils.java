@@ -1,5 +1,7 @@
 package com.android.example.guardianapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -101,9 +103,9 @@ public class QueryUtils {
                 String date = result.getString("webPublicationDate");
                 String url = result.getString("webUrl");
                 JSONObject fields = result.getJSONObject("fields");
-                // TODO: fetch actual bitmap
                 String thumbnailUrl = fields.getString("thumbnail");
-                Article article = new Article(title, date, url, null);
+                Bitmap thumbnail = fetchThumbnail(thumbnailUrl);
+                Article article = new Article(title, date, url, thumbnail);
                 articles.add(article);
             }
         } catch (JSONException | NullPointerException e) {
@@ -111,6 +113,41 @@ public class QueryUtils {
             e.printStackTrace();
         }
         return articles;
+    }
+
+    private static Bitmap fetchThumbnail(String urlStr) {
+        HttpURLConnection httpURLConnection = null;
+        InputStream inputStream = null;
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(urlStr);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.connect();
+            int responseCode = httpURLConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                inputStream = httpURLConnection.getInputStream();
+                if (null != inputStream) {
+                    bitmap = BitmapFactory.decodeStream(inputStream);
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != httpURLConnection) {
+                httpURLConnection.disconnect();
+            }
+            if (null != inputStream) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return bitmap;
     }
 
     private static URL strToUrl(String urlStr) {

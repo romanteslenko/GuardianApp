@@ -27,9 +27,9 @@ public class ArticlesAdapter extends ArrayAdapter<Article> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.article, parent, false);
             holder = new ViewHolder();
             holder.thumbnail = convertView.findViewById(R.id.thumbnail);
-            LinearLayout desctiption = convertView.findViewById(R.id.description);
-            holder.title = desctiption.findViewById(R.id.title);
-            holder.date = desctiption.findViewById(R.id.date);
+            LinearLayout description = convertView.findViewById(R.id.description);
+            holder.title = description.findViewById(R.id.title);
+            holder.date = description.findViewById(R.id.date);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
