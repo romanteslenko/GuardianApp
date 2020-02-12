@@ -28,7 +28,6 @@
             android:gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="2"
             tools:text="Super awesome news" />
 
         <TextView
